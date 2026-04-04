@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚖️ 互动教学天平秤</title>
+    <style>
+        body {
+            font-family: 'Comic Sans MS', 'Microsoft YaHei', sans-serif;
+            background-color: #f0f8ff;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
+        }
+
+        h1 {
+            color: #2b6cb0;
+            margin-bottom: 10px;
+        }
+
+        /* 顶部控制台 & 状态显示 */
+        .dashboard {
+            background: white;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            text-align: center;
+            width: 600px;
+        }
+
+        .status-board {
+            display: flex;
+            justify-content: space-between;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4a5568;
+        }
+
+        .controls button {
+            background-color: #4299e1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-weight: bold;
+        }
+        .controls button:hover { background-color: #3182ce; }
+        .controls #clearAll { background-color: #e53e3e; }
+        .controls #clearAll:hover { background-color: #c53030; }
+
+        /* 天平主体区域 */
+        .scale-wrapper {
+            position: relative;
+            height: 350px;
+            width: 800px;
+            margin: 0 auto 30px;
+            border-bottom: 6px solid #a0aec0; /* 桌面 */
+        }
+
+        /* 梯形底座 */
+        .base {
+            width: 140px;
+            height: 220px;
+            background: linear-gradient(to bottom, #718096, #2d3748);
+            clip-path: polygon(35% 0, 65% 0, 100% 100%, 0% 100%);
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        /* 天平中心支点 */
+        .pivot {
+            width: 20px;
+            height: 20px;
+            background: #e53e3e;
+            border-radius: 50%;
+            position: absolute;
+            top: 124px; /* 350 - 220(base) - 6(table) = 124 */
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            border: 3px solid #fff;
+        }
+
+        /* 天平横梁 */
+        .beam {
+            width: 660px;
+            height: 16px;
+            background: linear-gradient(to bottom, #cbd5e0, #a0aec0);
+            border-radius: 8px;
+            position: absolute;
+            top: 124px; 
+            left: calc(50% - 330px);
+            margin-top: -8px; /* 垂直居中于支点 */
+            transform-origin: center center;
+            /* 关键点：使用cubic-bezier增加真实的物理回弹效果 */
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+        }
+
+        /* 悬挂系统（保持垂直） */
+        .hanger {
+            width: 140px;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-origin: top center;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .hanger-left { left: 30px; top: 8px; }
+        .hanger-right { right: 30px; top: 8px; }
+
+        /* 绳子 */
+        .string-group {
+            width: 60px;
+            height: 80px;
+            position: relative;
+        }
+        .string-group::before, .string-group::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 2px;
+            height: 85px;
+            background: #4a5568;
+        }
+        .string-group::before { left: 0; transform: rotate(-15deg); transform-origin: top left; }
+        .string-group::after { right: 0; transform: rotate(15deg); transform-origin: top right; }
+
+        /* 托盘 */
+        .tray {
+            width: 140px;
+            min-height: 50px;
+            max-height: 80px;
+            background: #f6e05e;
+            border: 3px solid #d69e2e;
+            border-radius: 0 0 25px 25px;
+            display: flex;
+            flex-wrap: wrap-reverse;
+            align-content: flex-end;
+            justify-content: center;
+            gap: 0px;
+            padding: 5px 3px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .tray .weight-item,
+        .tray .good-item {
+            width: 32px !important;
+            height: 32px !important;
+            padding: 0 !important;
+            font-size: 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .tray .good-item span {
+            display: none !important;
+        }
+
+        /* 物品和砝码选择区 */
+        .selection-panel {
+            display: flex;
+            width: 800px;
+            gap: 20px;
+        }
+        .panel {
+            flex: 1;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 2px dashed #cbd5e0;
+        }
+        .panel h3 {
+            margin-top: 0;
+            text-align: center;
+            color: #4a5568;
+        }
+        .item-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        /* 基础物品样式 */
+        .item {
+            cursor: pointer;
+            transition: transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+        .item:active { transform: scale(0.9); }
+
+        /* 砝码样式 (放左边) */
+        .weight-item {
+            background: radial-gradient(circle, #7f9cf5, #4c51bf);
+            color: white;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            border: 2px solid #434190;
+        }
+        
+        /* 物品样式 (放右边) */
+        .good-item {
+            background: #fff5f5;
+            border: 2px solid #fc8181;
+            border-radius: 10px;
+            padding: 5px 12px;
+            font-size: 20px;
+        }
+        .good-item span {
+            font-size: 14px;
+            color: #c53030;
+            margin-left: 4px;
+        }
+
+        /* 托盘内的物品特殊样式（大幅缩小+悬停提示删除） */
+        .tray .item {
+            transform: scale(0.45);
+            margin: -8px -6px;
+            animation: dropIn 0.3s ease-out;
+            position: relative;
+            z-index: 1;
+        }
+        .tray .item:hover::after {
+            content: "✕";
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #e53e3e;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            font-size: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        @keyframes dropIn {
+            from { transform: translateY(-30px) scale(0.45); opacity: 0; }
+            to { transform: translateY(0) scale(0.45); opacity: 1; }
+        }
+
+        /* 移动端响应式适配 */
+        @media (max-width: 768px) {
+            body {
+                padding: 5px 3px;
+            }
+            
+            h1 {
+                font-size: 1.2em;
+                margin-bottom: 5px;
+            }
+
+            .dashboard {
+                width: 98%;
+                padding: 8px 10px;
+                margin-bottom: 10px;
+            }
+
+            .status-board {
+                font-size: 12px;
+                flex-direction: row;
+                gap: 5px;
+                margin-bottom: 8px;
+            }
+
+            .controls {
+                display: flex;
+                gap: 5px;
+                justify-content: center;
+            }
+
+            .controls button {
+                padding: 5px 8px;
+                font-size: 11px;
+                margin: 0;
+            }
+
+            .scale-wrapper {
+                width: 100%;
+                height: 240px;
+                transform: scale(0.65) translateY(30px);
+                transform-origin: center 50%;
+                margin-bottom: 20px;
+            }
+
+            .base {
+                height: 158px;
+            }
+
+            .pivot {
+                top: 32px;
+            }
+
+            .beam {
+                width: 560px;
+                left: calc(50% - 280px);
+                top: 32px;
+            }
+
+            .selection-panel {
+                width: 98%;
+                flex-direction: row;
+                gap: 8px;
+                margin-top: 30px;
+            }
+
+            .panel {
+                padding: 8px 5px;
+            }
+
+            .panel h3 {
+                font-size: 0.85em;
+                margin-bottom: 8px;
+            }
+
+            .item-list {
+                gap: 4px;
+            }
+
+            .weight-item {
+                width: 36px;
+                height: 36px;
+                font-size: 12px;
+            }
+
+            .good-item {
+                padding: 4px 7px;
+                font-size: 17px;
+            }
+
+            .good-item span {
+                font-size: 11px;
+                margin-left: 2px;
+            }
+
+            .tray {
+                width: 150px;
+                min-height: 55px;
+                max-height: 82px;
+                padding: 4px 3px;
+                gap: 0px;
+                overflow: hidden;
+            }
+            
+            .tray .weight-item,
+            .tray .good-item {
+                width: 34px !important;
+                height: 34px !important;
+                padding: 0 !important;
+                font-size: 13px !important;
+            }
+            
+            .tray .good-item span {
+                display: none !important;
+            }
+            
+            .tray .item {
+                transform: scale(0.45);
+                margin: -8px -6px;
+            }
+
+            .hanger-left { left: 35px; }
+            .hanger-right { right: 35px; }
+        }
+
+        @media (max-width: 480px) {
+            .scale-wrapper {
+                height: 220px;
+                transform: scale(0.58) translateY(25px);
+                transform-origin: center 50%;
+                margin-bottom: 15px;
+            }
+
+            .base {
+                height: 139px;
+            }
+
+            .pivot {
+                top: 41px;
+            }
+
+            .beam {
+                width: 540px;
+                left: calc(50% - 270px);
+                top: 41px;
+            }
+
+            .status-board {
+                font-size: 11px;
+            }
+
+            .controls button {
+                padding: 4px 7px;
+                font-size: 10px;
+            }
+
+            .hanger-left { left: 40px; }
+            .hanger-right { right: 40px; }
+
+            .selection-panel {
+                margin-top: 25px;
+            }
+
+            .tray {
+                width: 145px;
+                min-height: 52px;
+                max-height: 78px;
+            }
+            
+            .tray .weight-item,
+            .tray .good-item {
+                width: 32px !important;
+                height: 32px !important;
+                font-size: 12px !important;
+            }
+            
+            .tray .item {
+                transform: scale(0.43);
+                margin: -9px -7px;
+            }
+
+            .weight-item {
+                width: 33px;
+                height: 33px;
+                font-size: 11px;
+            }
+
+            .good-item {
+                padding: 3px 6px;
+                font-size: 15px;
+            }
+
+            .good-item span {
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>⚖️ 趣味重量天平秤</h1>
+
+    <div class="dashboard">
+        <div class="status-board">
+            <div style="color: #4c51bf;">左侧(砝码): <span id="left-weight">0</span> g</div>
+            <div id="balance-status" style="color: #38a169;">✅ 平衡</div>
+            <div style="color: #c53030;">右侧(物品): <span id="right-weight">0</span> g</div>
+        </div>
+        <div class="controls">
+            <button id="clearLeft">仅清空左盘</button>
+            <button id="clearAll">全部清空</button>
+            <button id="clearRight">仅清空右盘</button>
+        </div>
+    </div>
+
+    <div class="scale-wrapper">
+        <div class="pivot"></div>
+        <div class="base"></div>
+        
+        <div class="beam" id="beam">
+            <div class="hanger hanger-left" id="hanger-left">
+                <div class="string-group"></div>
+                <div class="tray" id="tray-left"></div>
+            </div>
+            
+            <div class="hanger hanger-right" id="hanger-right">
+                <div class="string-group"></div>
+                <div class="tray" id="tray-right"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="selection-panel">
+        <div class="panel">
+            <h3>标准砝码区 (点击加入左盘)</h3>
+            <div class="item-list" id="weight-source">
+                <div class="item weight-item" data-weight="1">1g</div>
+                <div class="item weight-item" data-weight="2">2g</div>
+                <div class="item weight-item" data-weight="5">5g</div>
+                <div class="item weight-item" data-weight="10">10g</div>
+                <div class="item weight-item" data-weight="20">20g</div>
+            </div>
+        </div>
+        <div class="panel">
+            <h3>生活物品区 (点击加入右盘)</h3>
+            <div class="item-list" id="good-source">
+                <div class="item good-item" data-weight="1">🍓<span>1g</span></div>
+                <div class="item good-item" data-weight="2">🥚<span>2g</span></div>
+                <div class="item good-item" data-weight="5">🍎<span>5g</span></div>
+                <div class="item good-item" data-weight="10">🍊<span>10g</span></div>
+                <div class="item good-item" data-weight="20">🍉<span>20g</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取DOM元素
+        const beam = document.getElementById('beam');
+        const hangerLeft = document.getElementById('hanger-left');
+        const hangerRight = document.getElementById('hanger-right');
+        const trayLeft = document.getElementById('tray-left');
+        const trayRight = document.getElementById('tray-right');
+        
+        const textLeftWt = document.getElementById('left-weight');
+        const textRightWt = document.getElementById('right-weight');
+        const textStatus = document.getElementById('balance-status');
+
+        // 更新天平状态的核心函数
+        function updateScale() {
+            // 1. 计算两边总重量
+            const leftTotal = Array.from(trayLeft.children).reduce((sum, el) => sum + parseInt(el.dataset.weight), 0);
+            const rightTotal = Array.from(trayRight.children).reduce((sum, el) => sum + parseInt(el.dataset.weight), 0);
+
+            // 2. 更新面板文字显示
+            textLeftWt.innerText = leftTotal;
+            textRightWt.innerText = rightTotal;
+
+            if (leftTotal > rightTotal) {
+                textStatus.innerText = "👈 左边重";
+                textStatus.style.color = "#4c51bf";
+            } else if (leftTotal < rightTotal) {
+                textStatus.innerText = "右边重 👉";
+                textStatus.style.color = "#c53030";
+            } else {
+                textStatus.innerText = "✅ 平衡";
+                textStatus.style.color = "#38a169";
+            }
+
+            // 3. 计算倾斜角度
+            const diff = leftTotal - rightTotal;
+            // 每克重量差导致 1.5 度的倾斜。最大限制在 ±25 度，防止画面穿模
+            const rotateAngle = Math.max(-25, Math.min(25, -diff * 1.5));
+
+            // 4. 应用CSS旋转（横梁倾斜，左右挂绳进行反向旋转以保持托盘水平垂直）
+            beam.style.transform = `rotate(${rotateAngle}deg)`;
+            hangerLeft.style.transform = `rotate(${-rotateAngle}deg)`;
+            hangerRight.style.transform = `rotate(${-rotateAngle}deg)`;
+        }
+
+        // 绑定点击事件：从选择区添加物品到托盘
+        function bindAddItemEvents(selector, targetTray) {
+            document.querySelectorAll(selector).forEach(el => {
+                el.addEventListener('click', () => {
+                    // 克隆被点击的元素
+                    const clone = el.cloneNode(true);
+                    
+                    // 给克隆后的元素绑定点击删除事件
+                    clone.addEventListener('click', function() {
+                        this.remove();
+                        updateScale();
+                    });
+                    
+                    // 添加到对应的托盘中并重新计算天平状态
+                    targetTray.appendChild(clone);
+                    updateScale();
+                });
+            });
+        }
+
+        // 初始化绑定
+        bindAddItemEvents('#weight-source .item', trayLeft);
+        bindAddItemEvents('#good-source .item', trayRight);
+
+        // 按钮功能绑定
+        document.getElementById('clearLeft').addEventListener('click', () => {
+            trayLeft.innerHTML = '';
+            updateScale();
+        });
+
+        document.getElementById('clearRight').addEventListener('click', () => {
+            trayRight.innerHTML = '';
+            updateScale();
+        });
+
+        document.getElementById('clearAll').addEventListener('click', () => {
+            trayLeft.innerHTML = '';
+            trayRight.innerHTML = '';
+            updateScale();
+        });
+    </script>
+</body>
+</html>
