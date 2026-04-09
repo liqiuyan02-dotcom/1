@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>长颈鹿的世界 - 4+ 发现世界</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===========================================
+           CSS CUSTOM PROPERTIES (THEME)
+           Pastel Geometry Style
+           =========================================== */
+        :root {
+            /* Colors - Pastel Geometry */
+            --bg-primary: #c8d9e6;
+            --bg-secondary: #b8c9d6;
+            --card-bg: #faf9f7;
+            --pill-pink: #f0b4d4;
+            --pill-mint: #a8d4c4;
+            --pill-sage: #5a7c6a;
+            --pill-lavender: #9b8dc4;
+            --pill-violet: #7c6aad;
+            --text-primary: #1a1a1a;
+            --text-secondary: #5a5a5a;
+            --text-muted: #8a8a8a;
+            --accent-warm: #d4a574;
+
+            /* Typography */
+            --font-display: 'Plus Jakarta Sans', sans-serif;
+            --title-size: clamp(1.75rem, 4.5vw, 3rem);
+            --h2-size: clamp(1.5rem, 3.5vw, 2.25rem);
+            --h3-size: clamp(1.1rem, 2.5vw, 1.5rem);
+            --body-size: clamp(0.85rem, 1.5vw, 1.1rem);
+            --small-size: clamp(0.75rem, 1.2vw, 0.95rem);
+
+            /* Spacing */
+            --slide-padding: clamp(1.5rem, 4vw, 3rem);
+            --content-gap: clamp(1rem, 2.5vw, 2rem);
+            --element-gap: clamp(0.5rem, 1.5vw, 1rem);
+
+            /* Animation */
+            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --duration-normal: 0.6s;
+        }
+
+        /* ===========================================
+           VIEWPORT FITTING: MANDATORY BASE STYLES
+           =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+            font-family: var(--font-display);
+        }
+
+        html {
+            scroll-snap-type: y mandatory;
+            scroll-behavior: smooth;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
+            overflow: hidden;
+            scroll-snap-align: start;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+        }
+
+        .slide-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            max-height: 100%;
+            overflow: hidden;
+            padding: var(--slide-padding);
+        }
+
+        .card {
+            width: min(90vw, 1000px);
+            max-height: min(85vh, 750px);
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            margin: 0;
+        }
+
+        .card-body {
+            flex: 1;
+            padding: var(--slide-padding);
+            display: flex;
+            flex-direction: column;
+            gap: var(--content-gap);
+            overflow-y: auto;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: var(--title-size);
+            font-weight: 800;
+            color: var(--pill-sage);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-size: var(--h2-size);
+            font-weight: 700;
+            color: var(--pill-sage);
+            line-height: 1.3;
+        }
+
+        h3 {
+            font-size: var(--h3-size);
+            font-weight: 700;
+            color: var(--pill-sage);
+            line-height: 1.3;
+        }
+
+        p, li {
+            font-size: var(--body-size);
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        /* Lists */
+        .bullet-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
+        }
+
+        .bullet-list li {
+            position: relative;
+            padding-left: 1.5em;
+        }
+
+        .bullet-list li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5em;
+            width: 8px;
+            height: 8px;
+            background: var(--pill-mint);
+            border-radius: 50%;
+        }
+
+        .numbered-list {
+            list-style: none;
+            counter-reset: item;
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
+        }
+
+        .numbered-list li {
+            position: relative;
+            padding-left: 2.5em;
+        }
+
+        .numbered-list li::before {
+            counter-increment: item;
+            content: counter(item);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.8em;
+            height: 1.8em;
+            background: var(--pill-lavender);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+
+        /* Feature cards grid */
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+            gap: var(--element-gap);
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(168, 212, 196, 0.15) 0%, rgba(240, 180, 212, 0.1) 100%);
+            border-radius: 16px;
+            padding: clamp(1rem, 2vw, 1.5rem);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: var(--pill-mint);
+            transform: translateY(-4px);
+        }
+
+        .feature-card .emoji {
+            font-size: clamp(2rem, 4vw, 2.5rem);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .feature-card h4 {
+            font-size: var(--h3-size);
+            font-weight: 700;
+            color: var(--pill-sage);
+            margin-bottom: 0.3rem;
+        }
+
+        .feature-card p {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+        }
+
+        /* Pills decoration */
+        .pills {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding-right: 16px;
+            z-index: 10;
+        }
+
+        .pill {
+            width: 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .pill:nth-child(1) { height: 35px; background: var(--pill-pink); }
+        .pill:nth-child(2) { height: 50px; background: var(--pill-mint); }
+        .pill:nth-child(3) { height: 70px; background: var(--pill-sage); }
+        .pill:nth-child(4) { height: 50px; background: var(--pill-lavender); }
+        .pill:nth-child(5) { height: 35px; background: var(--pill-violet); }
+
+        /* Quote/Riddle box */
+        .riddle-box {
+            background: linear-gradient(135deg, rgba(240, 180, 212, 0.2) 0%, rgba(240, 180, 212, 0.05) 100%);
+            border-left: 4px solid var(--pill-pink);
+            border-radius: 0 16px 16px 0;
+            padding: clamp(1rem, 2.5vw, 1.5rem);
+            margin: var(--element-gap) 0;
+        }
+
+        .riddle-box p {
+            font-size: clamp(1rem, 2.5vw, 1.25rem);
+            font-weight: 600;
+            color: var(--text-primary);
+            line-height: 1.8;
+            font-style: italic;
+        }
+
+        .riddle-container {
+            display: flex;
+            align-items: center;
+            gap: var(--element-gap);
+            margin: var(--element-gap) 0;
+        }
+
+        .riddle-container .riddle-box {
+            flex: 1;
+            margin: 0;
+        }
+
+        .riddle-btn {
+            flex-shrink: 0;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--pill-pink) 0%, var(--pill-lavender) 100%);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: var(--body-size);
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(240, 180, 212, 0.4);
+        }
+
+        .riddle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(240, 180, 212, 0.6);
+        }
+
+        .riddle-btn:active {
+            transform: scale(0.98);
+        }
+
+        .giraffe-answer {
+            text-align: center;
+            padding: 1.5rem;
+            animation: bounceIn 0.6s ease;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .evolution-content {
+            display: flex;
+            gap: var(--content-gap);
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .evolution-text {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: var(--element-gap);
+            min-width: 250px;
+        }
+
+        .evolution-point {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(168, 212, 196, 0.15);
+            border-radius: 12px;
+        }
+
+        .point-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .evolution-point strong {
+            color: var(--pill-sage);
+            font-size: var(--body-size);
+        }
+
+        .evolution-point p {
+            font-size: var(--small-size);
+            margin-top: 4px;
+        }
+
+        .evolution-image {
+            flex-shrink: 0;
+            max-width: 40%;
+            min-width: 200px;
+        }
+
+        .evo-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .ecology-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--element-gap);
+        }
+
+        .ecology-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .ecology-card .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ecology-card h4 {
+            font-size: var(--body-size);
+            color: var(--pill-sage);
+            margin-bottom: 0.25rem;
+        }
+
+        .ecology-card p {
+            font-size: var(--small-size);
+        }
+
+        .ecology-highlight {
+            background: linear-gradient(135deg, rgba(168,212,196,0.2) 0%, rgba(212,165,116,0.2) 100%);
+        }
+
+        .compare-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: var(--element-gap);
+            margin-top: var(--element-gap);
+        }
+
+        .compare-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .compare-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border-color: var(--pill-mint);
+        }
+
+        .compare-card.active {
+            border-color: var(--pill-sage);
+            background: linear-gradient(135deg, rgba(168,212,196,0.1) 0%, rgba(168,212,196,0.05) 100%);
+        }
+
+        .compare-scene {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 20px;
+            height: 120px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .scene-item {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            position: relative;
+        }
+
+        .scene-item span {
+            font-size: 2.5rem;
+        }
+
+        .tree-item {
+            background: linear-gradient(to top, rgba(139, 90, 43, 0.2), transparent);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .giraffe-item {
+            background: linear-gradient(to top, rgba(212, 165, 116, 0.2), transparent);
+            border-radius: 8px 8px 0 0;
+        }
+
+        .compare-line {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .compare-result {
+            text-align: center;
+            font-weight: 600;
+            font-size: var(--small-size);
+            color: var(--pill-sage);
+            margin-top: 0.5rem;
+            min-height: 1.5rem;
+        }
+
+        .build-content {
+            display: flex;
+            gap: var(--content-gap);
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .build-steps {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .build-image {
+            flex-shrink: 0;
+            max-width: 35%;
+            min-width: 200px;
+            transform: translateY(-10%);
+        }
+
+        .build-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .title-with-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .play-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(238, 90, 90, 0.4);
+        }
+
+        .play-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(238, 90, 90, 0.6);
+        }
+
+        .play-btn span {
+            margin-left: 3px;
+        }
+
+        /* Info tag */
+        .info-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--pill-mint);
+            color: white;
+            border-radius: 20px;
+            font-size: var(--small-size);
+            font-weight: 600;
+            margin-bottom: var(--element-gap);
+        }
+
+        /* Measurement visual */
+        .measure-visual {
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            padding: var(--element-gap);
+            background: rgba(168, 212, 196, 0.1);
+            border-radius: 16px;
+            justify-content: center;
+        }
+
+        .tree-visual, .giraffe-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tree-block, .giraffe-block {
+            width: 40px;
+            background: var(--pill-sage);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: var(--small-size);
+        }
+
+        .tree-block {
+            background: var(--accent-warm);
+        }
+
+        .giraffe-block {
+            background: var(--pill-sage);
+        }
+
+        .block-label {
+            font-size: var(--small-size);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Progress bar */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--pill-mint), var(--pill-sage));
+            z-index: 1000;
+            transition: width 0.3s ease;
+        }
+
+        /* Navigation dots */
+        .nav-dots {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .nav-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(90, 124, 106, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .nav-dot.active {
+            background: var(--pill-sage);
+            transform: scale(1.3);
+        }
+
+        .nav-dot:hover {
+            background: var(--pill-mint);
+        }
+
+        /* Keyboard hint */
+        .keyboard-hint {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 12px;
+            color: rgba(90, 124, 106, 0.6);
+            z-index: 1000;
+        }
+
+        /* ===========================================
+           ANIMATIONS
+           =========================================== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(25px);
+            transition: opacity var(--duration-normal) var(--ease-out-expo),
+                        transform var(--duration-normal) var(--ease-out-expo);
+        }
+
+        .slide.visible .reveal {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal:nth-child(1) { transition-delay: 0.08s; }
+        .reveal:nth-child(2) { transition-delay: 0.16s; }
+        .reveal:nth-child(3) { transition-delay: 0.24s; }
+        .reveal:nth-child(4) { transition-delay: 0.32s; }
+        .reveal:nth-child(5) { transition-delay: 0.40s; }
+        .reveal:nth-child(6) { transition-delay: 0.48s; }
+
+        /* Gentle float animation for emojis */
+        @keyframes gentle-float {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-8px) rotate(3deg); }
+        }
+
+        .float-anim {
+            animation: gentle-float 3s ease-in-out infinite;
+        }
+
+        /* Bounce for main emoji */
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .bounce-anim {
+            animation: bounce 2s ease infinite;
+        }
+
+        /* ===========================================
+           SPECIFIC SLIDE STYLES
+           =========================================== */
+
+        /* Title slide */
+        .title-slide .card {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-slide .card-body {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title-slide .main-emoji {
+            font-size: clamp(5rem, 12vw, 8rem);
+            margin-bottom: var(--content-gap);
+        }
+
+        .title-slide h1 {
+            margin-bottom: var(--element-gap);
+        }
+
+        .title-slide .subtitle {
+            font-size: var(--h3-size);
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        /* Two column layout */
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--content-gap);
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            .pills { display: none; }
+            .nav-dots { right: 10px; }
+        }
+
+        /* Responsive breakpoints */
+        @media (max-height: 700px) {
+            :root {
+                --slide-padding: clamp(1rem, 3vw, 2rem);
+                --content-gap: clamp(0.75rem, 2vw, 1.5rem);
+            }
+            .card {
+                max-height: 90vh;
+            }
+        }
+
+        @media (max-height: 600px) {
+            .keyboard-hint { display: none; }
+            .feature-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.2s !important;
+            }
+            .reveal {
+                opacity: 1;
+                transform: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <nav class="nav-dots" id="navDots"></nav>
+
+    <div class="keyboard-hint">← → 方向键或空格键切换</div>
+
+    <section class="slide title-slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="main-emoji bounce-anim reveal">🦒</div>
+                <h1 class="reveal">长颈鹿的世界</h1>
+                <p class="subtitle reveal">4+ 发现世界 · 乐高课程</p>
+                <p class="reveal" style="margin-top: 0.5rem; font-size: var(--small-size); color: var(--text-muted);">《疯狂生物数学》第5课</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">📚 课程开场</div>
+                <h2 class="reveal">欢迎来到长颈鹿的世界！</h2>
+                <div class="feature-grid reveal" style="margin-top: 1rem;">
+                    <div class="feature-card">
+                        <span class="emoji">🐻</span>
+                        <h4>回顾上节课</h4>
+                        <p>称量宝宝维尼 ⚖️</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">🎯</span>
+                        <h4>今天我们要</h4>
+                        <p>认识草原上的巨人</p>
+                    </div>
+                </div>
+                <p class="reveal" style="margin-top: 1rem; text-align: center; color: var(--pill-sage); font-weight: 600;">准备好了吗？让我们开始探险吧！</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🤔 猜谜语</div>
+                <h2 class="reveal">猜猜我是谁？</h2>
+                <div class="riddle-container reveal">
+                    <div class="riddle-box">
+                        <p>脖子长长似天梯，<br>
+                        身穿花衣点点黑，<br>
+                        吃草喝水跑得快，<br>
+                        是谁站在草原上？</p>
+                    </div>
+                    <button class="riddle-btn" id="riddleBtn" onclick="showAnswer()">🔍 揭晓答案</button>
+                </div>
+                
+                <div class="two-column" id="revealContainer" style="display: none; align-items: center; flex: 1;">
+                    <div class="giraffe-answer" id="giraffeAnswer" style="display: none; padding: 0;">
+                        <span class="bounce-anim" style="font-size: clamp(4rem, 8vw, 6rem); display: inline-block;">🦒</span>
+                        <p style="font-size: var(--h3-size); font-weight: 700; color: var(--pill-sage); margin-top: 0.5rem;">是长颈鹿！</p>
+                    </div>
+                    
+                    <div id="thinkingSection" style="display: none;">
+                        <h3 style="color: var(--pill-pink); margin-bottom: 0.5rem;">思考问题</h3>
+                        <ul class="bullet-list">
+                            <li>长颈鹿的脖子为什么那么长？</li>
+                            <li>斑纹有什么作用？</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🧬 进化奥秘</div>
+                <div class="title-with-btn reveal">
+                    <h2>长颈鹿为什么脖子这么长？</h2>
+                    <a href="https://www.bilibili.com/video/BV1FTSeBnEp3/?spm_id_from=333.337.search-card.all.click&vd_source=a1fcb6a07a4e0bdd0c8c96643655c352" target="_blank" class="play-btn" title="观看视频">
+                        <span>▶</span>
+                    </a>
+                </div>
+                <div class="evolution-content reveal">
+                    <div class="evolution-text">
+                        <div class="evolution-point">
+                            <span class="point-icon">🌿</span>
+                            <div>
+                                <strong>食物竞争</strong>
+                                <p>草原上其他动物吃矮处的草，长颈鹿吃高处的树叶</p>
+                            </div>
+                        </div>
+                        <div class="evolution-point">
+                            <span class="point-icon">⏳</span>
+                            <div>
+                                <strong>自然选择</strong>
+                                <p>脖子长的长颈鹿能吃到更多食物，更容易存活</p>
+                            </div>
+                        </div>
+                        <div class="evolution-point">
+                            <span class="point-icon">🔄</span>
+                            <div>
+                                <strong>代代相传</strong>
+                                <p>经过漫长岁月，长颈鹿的脖子越来越长</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="evolution-image">
+                        <img src="https://s41.ax1x.com/2026/04/09/peab8Zq.png" alt="长颈鹿进化图" class="evo-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🌍 生态环境</div>
+                <h2 class="reveal">长颈鹿生活在哪里？</h2>
+                <div class="ecology-grid reveal">
+                    <div class="ecology-card">
+                        <span class="emoji">🌿</span>
+                        <h4>栖息地</h4>
+                        <p>非洲热带草原<br>植被丰富，阳光充足</p>
+                    </div>
+                    <div class="ecology-card">
+                        <span class="emoji">🌡️</span>
+                        <h4>气候</h4>
+                        <p>热带草原气候<br>干湿季节分明</p>
+                    </div>
+                    <div class="ecology-card ecology-highlight">
+                        <span style="font-size: 4rem;">🌅</span>
+                        <p style="font-weight: 600; color: var(--pill-sage); margin-top: 0.5rem;">广阔的非洲大草原<br>长颈鹿的家园</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🦒 生活习性</div>
+                <h2 class="reveal">长颈鹿的一天</h2>
+                <div class="feature-grid reveal">
+                    <div class="feature-card">
+                        <span class="emoji">🌳</span>
+                        <h4>食性</h4>
+                        <p>吃树叶，尤爱金合欢叶<br>用长舌头卷取食物</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">👥</span>
+                        <h4>社会行为</h4>
+                        <p>群居生活<br>用姿势、声音、气味沟通</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">👶</span>
+                        <h4>繁殖</h4>
+                        <p>孕期15个月<br>寿命约20年</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">🦓</span>
+                        <h4>家族成员</h4>
+                        <p>网纹长颈鹿<br>安哥拉长颈鹿等</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🔍 身体结构</div>
+                <h2 class="reveal">长颈鹿的秘密武器</h2>
+                <div class="two-column">
+                    <div class="reveal">
+                        <ul class="bullet-list">
+                            <li><strong style="color: var(--pill-sage);">长颈、高腿</strong> — 方便觅食高处的树叶，也能远远发现敌人</li>
+                            <li><strong style="color: var(--pill-sage);">斑点皮毛</strong> — 伪装保护色，还能帮助散热</li>
+                            <li><strong style="color: var(--pill-sage);">大眼睛</strong> — 视野广阔，视力非常好</li>
+                            <li><strong style="color: var(--pill-sage);">强心脏</strong> — 特殊的循环系统，保证血液能输送到大脑</li>
+                        </ul>
+                    </div>
+                    <div class="reveal" style="text-align: center;">
+                        <div style="background: rgba(90,124,106,0.1); border-radius: 16px; padding: 2rem;">
+                            <img src="https://copyright.bdstatic.com/vcg/creative/90c1307f7d1334b3d63a15dd6892901d.jpg@h_1280" alt="长颈鹿" style="max-width: 100%; max-height: 240px; border-radius: 12px; transform: scale(1.2) translateY(-20%); margin-bottom: 10px;">
+                            <p style="margin-top: 1rem; font-weight: 600; color: var(--pill-sage);">身高可达 5-6 米！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🧱 建构环节</div>
+                <h2 class="reveal">搭建我们的长颈鹿</h2>
+                <div class="build-content reveal">
+                    <div class="build-steps">
+                        <ol class="numbered-list">
+                            <li><strong>身体</strong> — 搭建长颈鹿的身体主体</li>
+                            <li><strong>四肢</strong> — 安装四条长长的腿</li>
+                            <li><strong>脖子</strong> — 搭建标志性的长脖子</li>
+                            <li><strong>头部</strong> — 加上小脑袋和耳朵</li>
+                            <li><strong>尾巴</strong> — 最后装上小尾巴</li>
+                        </ol>
+                        <div style="margin-top: 1rem; background: linear-gradient(135deg, rgba(240,180,212,0.15) 0%, rgba(155,141,196,0.1) 100%); border-radius: 12px; padding: 1rem; text-align: center;">
+                            <p style="font-weight: 600; color: var(--pill-violet);">💡 小贴士：用正方形积木当尺子，测量长颈鹿的高度！</p>
+                        </div>
+                    </div>
+                    <div class="build-image">
+                        <img src="https://s41.ax1x.com/2026/04/09/peaLhVI.png" alt="长颈鹿搭建示例" class="build-img">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">📏 测量活动</div>
+                <h2 class="reveal">高度对比小游戏</h2>
+                <p class="reveal" style="margin-bottom: 0.5rem;">点击卡片，看看长颈鹿和树谁更高？</p>
+                <div class="compare-cards reveal">
+                    <div class="compare-card" onclick="showCompare(1)">
+                        <div class="compare-scene" id="scene1">
+                            <div class="scene-item tree-item" style="height: 75px;">
+                                <span style="font-size: 75px; line-height: 1;">🌳</span>
+                            </div>
+                            <div class="scene-item giraffe-item" style="height: 45px;">
+                                <span style="font-size: 45px; line-height: 1;">🦒</span>
+                            </div>
+                            <svg class="compare-line" id="line1" style="display: none;"></svg>
+                        </div>
+                        <p class="compare-result" id="result1">点击查看对比</p>
+                    </div>
+                    <div class="compare-card" onclick="showCompare(2)">
+                        <div class="compare-scene" id="scene2">
+                            <div class="scene-item tree-item" style="height: 75px;">
+                                <span style="font-size: 75px; line-height: 1;">🌳</span>
+                            </div>
+                            <div class="scene-item giraffe-item" style="height: 75px;">
+                                <span style="font-size: 75px; line-height: 1;">🦒</span>
+                            </div>
+                            <svg class="compare-line" id="line2" style="display: none;"></svg>
+                        </div>
+                        <p class="compare-result" id="result2">点击查看对比</p>
+                    </div>
+                    <div class="compare-card" onclick="showCompare(3)">
+                        <div class="compare-scene" id="scene3">
+                            <div class="scene-item tree-item" style="height: 75px;">
+                                <span style="font-size: 75px; line-height: 1;">🌳</span>
+                            </div>
+                            <div class="scene-item giraffe-item" style="height: 105px;">
+                                <span style="font-size: 105px; line-height: 1;">🦒</span>
+                            </div>
+                            <svg class="compare-line" id="line3" style="display: none;"></svg>
+                        </div>
+                        <p class="compare-result" id="result3">点击查看对比</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🔢 数学秘密</div>
+                <h2 class="reveal">长颈鹿身上的数学</h2>
+                <div class="feature-grid reveal">
+                    <div class="feature-card">
+                        <span class="emoji">🔷</span>
+                        <h4>几何形状</h4>
+                        <p>斑点 → 圆形<br>耳朵 → 三角形<br>身体 → 矩形</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">🔢</span>
+                        <h4>数字计数</h4>
+                        <p>数斑点<br>数耳朵<br>数腿</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">〰️</span>
+                        <h4>条纹规律</h4>
+                        <p>观察宽度<br>观察间隔<br>观察颜色</p>
+                    </div>
+                </div>
+                <p class="reveal" style="margin-top: 1rem; text-align: center; background: rgba(240,180,212,0.2); border-radius: 12px; padding: 1rem; font-weight: 600; color: var(--pill-pink);">
+                    🎯 挑战：你的长颈鹿身上有多少个圆形斑点？
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🎮 拓展游戏</div>
+                <h2 class="reveal">更多好玩的挑战</h2>
+                <div class="two-column">
+                    <div class="reveal">
+                        <div class="feature-card" style="margin-bottom: 1rem;">
+                            <span class="emoji">📊</span>
+                            <h4>身高排序</h4>
+                            <p>把长颈鹿按身高排序<br>从高到矮 或 从矮到高</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="emoji">🎯</span>
+                            <h4>最高星星奖</h4>
+                            <p>谁搭的长颈鹿最高？<br>奖励一颗小星星！</p>
+                        </div>
+                    </div>
+                    <div class="reveal">
+                        <div class="feature-card" style="margin-bottom: 1rem;">
+                            <span class="emoji">❓</span>
+                            <h4>猜数字</h4>
+                            <p>猜猜长颈鹿的脖子有多长？<br>有几只脚？</p>
+                        </div>
+                        <div class="feature-card">
+                            <span class="emoji">🌳</span>
+                            <h4>搭建更多</h4>
+                            <p>搭建更多树木<br>创造一片大草原！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">💭 反思提问</div>
+                <h2 class="reveal">今天学到了什么？</h2>
+                <div class="riddle-box reveal">
+                    <p style="font-size: var(--body-size);">想一想，回答下面的问题：</p>
+                </div>
+                <ul class="bullet-list reveal">
+                    <li>今天的搭建主题是什么？</li>
+                    <li>长颈鹿越高，吃到的树叶越<strong style="color: var(--pill-sage);">（高 / 多）</strong>？</li>
+                    <li>我们用什么工具测量高度？<strong style="color: var(--pill-sage);">（正方形积木）</strong></li>
+                    <li>你的作品有哪些部分？是怎么搭建的？</li>
+                    <li>如果积木倒了，你会怎么办？</li>
+                </ul>
+                <p class="reveal" style="margin-top: 1rem; text-align: center; color: var(--pill-mint); font-weight: 700; font-size: var(--h3-size);">🌟 勇敢尝试，不怕失败！</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">🎯 课程目标</div>
+                <h2 class="reveal">今天我们达成了</h2>
+                <div class="feature-grid reveal">
+                    <div class="feature-card">
+                        <span class="emoji">🧠</span>
+                        <h4>知识目标</h4>
+                        <p>了解长颈鹿结构与习性<br>热爱自然与动物</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">🛠️</span>
+                        <h4>技能目标</h4>
+                        <p>搭建长颈鹿作品<br>理解高度、学会估计与比较</p>
+                    </div>
+                    <div class="feature-card">
+                        <span class="emoji">💪</span>
+                        <h4>能力目标</h4>
+                        <p>发展逻辑思维<br>培养数学能力与抗挫折能力</p>
+                    </div>
+                </div>
+                <div class="reveal" style="margin-top: 1.5rem; text-align: center; background: linear-gradient(135deg, rgba(168,212,196,0.2) 0%, rgba(240,180,212,0.2) 100%); border-radius: 16px; padding: 1.5rem;">
+                    <span style="font-size: clamp(3rem, 6vw, 4rem); display: block; margin-bottom: 0.5rem;">🎁🔢</span>
+                    <h3 style="color: var(--pill-sage); margin-bottom: 0.5rem;">下节课预告</h3>
+                    <p style="font-weight: 600;">《神奇的数学宝箱》</p>
+                    <p style="font-size: var(--small-size); color: var(--text-muted); margin-top: 0.5rem;">下次见！继续探索数学的奥秘 🎉</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        /* ===========================================
+           SLIDE PRESENTATION CONTROLLER
+           =========================================== */
+        class SlidePresentation {
+            constructor() {
+                this.slides = document.querySelectorAll('.slide');
+                this.currentSlide = 0;
+                this.totalSlides = this.slides.length;
+
+                this.setupIntersectionObserver();
+                this.setupKeyboardNav();
+                this.setupTouchNav();
+                this.setupProgressBar();
+                this.setupNavDots();
+                this.setupScrollHandler();
+            }
+
+            setupIntersectionObserver() {
+                const observerOptions = {
+                    root: null,
+                    rootMargin: '0px',
+                    threshold: 0.5
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                            this.currentSlide = Array.from(this.slides).indexOf(entry.target);
+                            this.updateNavDots();
+                            this.updateProgressBar();
+                        }
+                    });
+                }, observerOptions);
+
+                this.slides.forEach(slide => observer.observe(slide));
+            }
+
+            setupKeyboardNav() {
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+                        e.preventDefault();
+                        this.nextSlide();
+                    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                        e.preventDefault();
+                        this.prevSlide();
+                    } else if (e.key === 'Home') {
+                        e.preventDefault();
+                        this.goToSlide(0);
+                    } else if (e.key === 'End') {
+                        e.preventDefault();
+                        this.goToSlide(this.totalSlides - 1);
+                    }
+                });
+            }
+
+            setupTouchNav() {
+                let touchStartY = 0;
+                let touchEndY = 0;
+
+                document.addEventListener('touchstart', (e) => {
+                    touchStartY = e.changedTouches[0].screenY;
+                }, { passive: true });
+
+                document.addEventListener('touchend', (e) => {
+                    touchEndY = e.changedTouches[0].screenY;
+                    this.handleSwipe(touchStartY, touchEndY);
+                }, { passive: true });
+            }
+
+            handleSwipe(startY, endY) {
+                const threshold = 50;
+                const diff = startY - endY;
+
+                if (Math.abs(diff) > threshold) {
+                    if (diff > 0) {
+                        this.nextSlide();
+                    } else {
+                        this.prevSlide();
+                    }
+                }
+            }
+
+            setupScrollHandler() {
+                let lastScrollTime = 0;
+                const scrollCooldown = 800;
+
+                document.addEventListener('wheel', (e) => {
+                    const now = Date.now();
+                    if (now - lastScrollTime < scrollCooldown) return;
+
+                    if (e.deltaY > 30) {
+                        lastScrollTime = now;
+                        this.nextSlide();
+                    } else if (e.deltaY < -30) {
+                        lastScrollTime = now;
+                        this.prevSlide();
+                    }
+                }, { passive: true });
+            }
+
+            setupProgressBar() {
+                this.progressBar = document.getElementById('progressBar');
+                this.updateProgressBar();
+            }
+
+            updateProgressBar() {
+                if (this.progressBar) {
+                    const progress = ((this.currentSlide + 1) / this.totalSlides) * 100;
+                    this.progressBar.style.width = `${progress}%`;
+                }
+            }
+
+            setupNavDots() {
+                const navDotsContainer = document.getElementById('navDots');
+                if (!navDotsContainer) return;
+
+                this.slides.forEach((_, index) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'nav-dot';
+                    dot.addEventListener('click', () => this.goToSlide(index));
+                    navDotsContainer.appendChild(dot);
+                });
+
+                this.navDots = document.querySelectorAll('.nav-dot');
+                this.updateNavDots();
+            }
+
+            updateNavDots() {
+                if (!this.navDots) return;
+                this.navDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === this.currentSlide);
+                });
+            }
+
+            nextSlide() {
+                if (this.currentSlide < this.totalSlides - 1) {
+                    this.goToSlide(this.currentSlide + 1);
+                }
+            }
+
+            prevSlide() {
+                if (this.currentSlide > 0) {
+                    this.goToSlide(this.currentSlide - 1);
+                }
+            }
+
+            goToSlide(index) {
+                if (index >= 0 && index < this.totalSlides) {
+                    this.slides[index].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Initialize presentation when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new SlidePresentation();
+        });
+
+        // 修改的 showAnswer 逻辑支持两列布局显示
+        function showAnswer() {
+            const btn = document.getElementById('riddleBtn');
+            const revealContainer = document.getElementById('revealContainer');
+            const giraffeAnswer = document.getElementById('giraffeAnswer');
+            const thinkingSection = document.getElementById('thinkingSection');
+            
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+            btn.textContent = '✅ 已揭晓';
+            
+            // 显示外层网格容器
+            revealContainer.style.display = 'grid';
+            // 显示左侧答案图片
+            giraffeAnswer.style.display = 'block';
+            
+            // 延迟显示右侧思考问题，缩短等待时间避免枯燥
+            setTimeout(() => {
+                thinkingSection.style.display = 'block';
+                thinkingSection.style.animation = 'fadeInUp 0.5s ease';
+            }, 1500);
+        }
+
+        function showCompare(group) {
+            const heights = {
+                1: { tree: 75, giraffe: 45 },
+                2: { tree: 75, giraffe: 75 },
+                3: { tree: 75, giraffe: 105 }
+            };
+
+            const card = document.querySelector(`.compare-card:nth-child(${group})`);
+            const line = document.getElementById(`line${group}`);
+            const result = document.getElementById(`result${group}`);
+            const scene = document.getElementById(`scene${group}`);
+            
+            document.querySelectorAll('.compare-card').forEach(c => c.classList.remove('active'));
+            card.classList.add('active');
+            
+            const h = heights[group];
+            const sceneHeight = 120;
+            const bottomPadding = 10;
+            const lineY = sceneHeight - 75 - bottomPadding;
+            
+            const sceneRect = scene.getBoundingClientRect();
+            const treeEl = scene.querySelector('.tree-item');
+            const giraffeEl = scene.querySelector('.giraffe-item');
+            const treeRect = treeEl.getBoundingClientRect();
+            const giraffeRect = giraffeEl.getBoundingClientRect();
+            
+            const treeCenterX = treeRect.left - sceneRect.left + treeRect.width / 2;
+            const giraffeCenterX = giraffeRect.left - sceneRect.left + giraffeRect.width / 2;
+            
+            line.style.display = 'block';
+            line.innerHTML = `
+                <line x1="${treeCenterX}" y1="${lineY}" x2="${giraffeCenterX}" y2="${lineY}" 
+                      stroke="#e53e3e" stroke-width="2" stroke-dasharray="5,5"/>
+                <line x1="${treeCenterX}" y1="${lineY}" x2="${treeCenterX}" y2="${sceneHeight - bottomPadding}" 
+                      stroke="#e53e3e" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                <line x1="${giraffeCenterX}" y1="${lineY}" x2="${giraffeCenterX}" y2="${sceneHeight - bottomPadding}" 
+                      stroke="#e53e3e" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+            `;
+            
+            let text = '';
+            if (h.tree > h.giraffe) {
+                text = '🌳 树比长颈鹿高';
+            } else if (h.tree < h.giraffe) {
+                text = '🦒 长颈鹿比树高';
+            } else {
+                text = '⚖️ 树和长颈鹿一样高';
+            }
+            result.textContent = text;
+            result.style.color = '#e53e3e';
+        }
+    </script>
+</body>
+</html>
