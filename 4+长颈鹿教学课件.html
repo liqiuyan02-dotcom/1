@@ -557,50 +557,6 @@
             margin-bottom: var(--element-gap);
         }
 
-        /* Measurement visual */
-        .measure-visual {
-            display: flex;
-            align-items: flex-end;
-            gap: 20px;
-            padding: var(--element-gap);
-            background: rgba(168, 212, 196, 0.1);
-            border-radius: 16px;
-            justify-content: center;
-        }
-
-        .tree-visual, .giraffe-visual {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .tree-block, .giraffe-block {
-            width: 40px;
-            background: var(--pill-sage);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: var(--small-size);
-        }
-
-        .tree-block {
-            background: var(--accent-warm);
-        }
-
-        .giraffe-block {
-            background: var(--pill-sage);
-        }
-
-        .block-label {
-            font-size: var(--small-size);
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
         /* Progress bar */
         .progress-bar {
             position: fixed;
@@ -653,9 +609,7 @@
             z-index: 1000;
         }
 
-        /* ===========================================
-           ANIMATIONS
-           =========================================== */
+        /* Animations */
         .reveal {
             opacity: 0;
             transform: translateY(25px);
@@ -675,7 +629,6 @@
         .reveal:nth-child(5) { transition-delay: 0.40s; }
         .reveal:nth-child(6) { transition-delay: 0.48s; }
 
-        /* Gentle float animation for emojis */
         @keyframes gentle-float {
             0%, 100% { transform: translateY(0) rotate(-3deg); }
             50% { transform: translateY(-8px) rotate(3deg); }
@@ -685,7 +638,6 @@
             animation: gentle-float 3s ease-in-out infinite;
         }
 
-        /* Bounce for main emoji */
         @keyframes bounce {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-12px); }
@@ -695,11 +647,7 @@
             animation: bounce 2s ease infinite;
         }
 
-        /* ===========================================
-           SPECIFIC SLIDE STYLES
-           =========================================== */
-
-        /* Title slide */
+        /* Specific slide styles */
         .title-slide .card {
             justify-content: center;
             align-items: center;
@@ -727,7 +675,6 @@
             font-weight: 500;
         }
 
-        /* Two column layout */
         .two-column {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -743,7 +690,6 @@
             .nav-dots { right: 10px; }
         }
 
-        /* Responsive breakpoints */
         @media (max-height: 700px) {
             :root {
                 --slide-padding: clamp(1rem, 3vw, 2rem);
@@ -759,7 +705,6 @@
             .feature-grid { grid-template-columns: repeat(2, 1fr); }
         }
 
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
                 animation-duration: 0.01ms !important;
@@ -769,6 +714,62 @@
                 opacity: 1;
                 transform: none;
             }
+        }
+
+        /* ===========================================
+           记录表专属样式
+           =========================================== */
+        .check-box-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .check-box-container:hover {
+            background: rgba(168, 212, 196, 0.1);
+            border-color: rgba(168, 212, 196, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .blocks-preview {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+        }
+
+        .block-unit {
+            width: 11px; 
+            height: 11px; 
+            background: var(--pill-mint); 
+            border-radius: 2px;
+        }
+
+        .check-box {
+            width: 22px;
+            height: 22px;
+            border: 2px solid var(--pill-sage);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .check-box.checked {
+            background: var(--pill-sage);
+            border-color: var(--pill-sage);
+        }
+
+        .check-box.checked::after {
+            content: '✅';
         }
     </style>
 </head>
@@ -840,10 +841,7 @@
                 <h2 class="reveal">猜猜我是谁？</h2>
                 <div class="riddle-container reveal">
                     <div class="riddle-box">
-                        <p>脖子长长似天梯，<br>
-                        身穿花衣点点黑，<br>
-                        吃草喝水跑得快，<br>
-                        是谁站在草原上？</p>
+                        <p>脖子长长似天梯，<br>身穿花衣点点黑，<br>吃草喝水跑得快，<br>是谁站在草原上？</p>
                     </div>
                     <button class="riddle-btn" id="riddleBtn" onclick="showAnswer()">🔍 揭晓答案</button>
                 </div>
@@ -879,7 +877,7 @@
                 <div class="info-tag reveal">🧬 进化奥秘</div>
                 <div class="title-with-btn reveal">
                     <h2>长颈鹿为什么脖子这么长？</h2>
-                    <a href="https://www.bilibili.com/video/BV1FTSeBnEp3/?spm_id_from=333.337.search-card.all.click&vd_source=a1fcb6a07a4e0bdd0c8c96643655c352" target="_blank" class="play-btn" title="观看视频">
+                    <a href="https://www.bilibili.com/video/BV1FTSeBnEp3" target="_blank" class="play-btn" title="观看视频">
                         <span>▶</span>
                     </a>
                 </div>
@@ -1100,6 +1098,133 @@
                         </div>
                         <p class="compare-result" id="result3">点击查看对比</p>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="card">
+            <div class="pills">
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+                <div class="pill"></div>
+            </div>
+            <div class="card-body">
+                <div class="info-tag reveal">📝 记录表</div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <div>
+                        <h2 class="reveal" style="font-size: 1.2rem; margin: 0;">我是测量小能手</h2>
+                        <p class="reveal" style="margin: 0; font-size: 0.75rem;">数一数左边的树干有几节，在右边选出对应的积木数量并打✅！</p>
+                    </div>
+                    <button id="downloadBtn" class="riddle-btn reveal" onclick="downloadTable()" style="padding: 6px 12px; font-size: 0.75rem; background: linear-gradient(135deg, var(--pill-mint) 0%, var(--pill-sage) 100%);">
+                        📸 下载高清记录表
+                    </button>
+                </div>
+                
+                <div id="recordTable" class="reveal" style="background: white; border-radius: 10px; padding: 0.6rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); width: 100%;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: center;">
+                        <thead>
+                            <tr>
+                                <th style="padding-bottom: 4px; border-bottom: 2px dashed var(--bg-secondary); color: var(--pill-sage); font-size: 0.7rem; width: 35%;">大树的高度</th>
+                                <th style="padding-bottom: 4px; border-bottom: 2px dashed var(--bg-secondary); color: var(--pill-sage); font-size: 0.7rem; width: 65%;">积木的数量（观察后打✅）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 6px 4px; border-bottom: 1px dashed #eee;">
+                                    <div style="display: flex; justify-content: center; align-items: flex-end; gap: 4px;">
+                                        <div style="font-size: 26px; line-height: 1;">🌳</div>
+                                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 6px 4px; border-bottom: 1px dashed #eee;">
+                                    <div style="display: flex; justify-content: space-around; align-items: flex-end;">
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 4px; border-bottom: 1px dashed #eee;">
+                                    <div style="display: flex; justify-content: center; align-items: flex-end; gap: 4px;">
+                                        <div style="font-size: 40px; line-height: 1;">🌳</div>
+                                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 6px 4px; border-bottom: 1px dashed #eee;">
+                                    <div style="display: flex; justify-content: space-around; align-items: flex-end;">
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 4px;">
+                                    <div style="display: flex; justify-content: center; align-items: flex-end; gap: 4px;">
+                                        <div style="font-size: 54px; line-height: 1;">🌳</div>
+                                        <div style="display: flex; flex-direction: column; gap: 1px;">
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                            <div style="width: 14px; height: 10px; background: var(--accent-warm); border-radius: 2px;"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td style="padding: 6px 4px;">
+                                    <div style="display: flex; justify-content: space-around; align-items: flex-end;">
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                        <div class="check-box-container" onclick="toggleRowCheck(this)">
+                                            <div class="blocks-preview"><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div><div class="block-unit"></div></div>
+                                            <div class="check-box"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -1409,7 +1534,7 @@
             new SlidePresentation();
         });
 
-        // 修改的 showAnswer 逻辑支持两列布局显示
+        // 揭晓答案逻辑
         function showAnswer() {
             const btn = document.getElementById('riddleBtn');
             const revealContainer = document.getElementById('revealContainer');
@@ -1420,18 +1545,16 @@
             btn.style.opacity = '0.5';
             btn.textContent = '✅ 已揭晓';
             
-            // 显示外层网格容器
             revealContainer.style.display = 'grid';
-            // 显示左侧答案图片
             giraffeAnswer.style.display = 'block';
             
-            // 延迟显示右侧思考问题，缩短等待时间避免枯燥
             setTimeout(() => {
                 thinkingSection.style.display = 'block';
                 thinkingSection.style.animation = 'fadeInUp 0.5s ease';
             }, 1500);
         }
 
+        // 高度对比游戏逻辑
         function showCompare(group) {
             const heights = {
                 1: { tree: 75, giraffe: 45 },
@@ -1481,6 +1604,71 @@
             }
             result.textContent = text;
             result.style.color = '#e53e3e';
+        }
+
+        // ===========================================
+        // 记录表交互与下载逻辑
+        // ===========================================
+        
+        // 单选打勾逻辑（同一行只能选一个）
+        function toggleRowCheck(container) {
+            const row = container.closest('tr');
+            // 清除同行其他的勾选
+            row.querySelectorAll('.check-box').forEach(box => {
+                box.classList.remove('checked');
+            });
+            // 为当前点击的打勾
+            const currentBox = container.querySelector('.check-box');
+            currentBox.classList.add('checked');
+        }
+
+        // 下载表格图片逻辑
+        function downloadTable() {
+            const btn = document.getElementById('downloadBtn');
+            const originalText = btn.innerHTML;
+            
+            // 按钮状态变为正在生成
+            btn.innerHTML = '⏳ 正在生成高清图...';
+            btn.style.opacity = '0.7';
+            btn.style.pointerEvents = 'none';
+
+            // 动态加载 html2canvas 库
+            if (typeof html2canvas === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js';
+                script.onload = () => executeDownload(btn, originalText);
+                document.head.appendChild(script);
+            } else {
+                executeDownload(btn, originalText);
+            }
+        }
+
+        function executeDownload(btn, originalText) {
+            const tableArea = document.getElementById('recordTable');
+            
+            // 使用 html2canvas 生成截图 (Scale=3 保证高清)
+            html2canvas(tableArea, {
+                scale: 3, 
+                backgroundColor: '#ffffff',
+                logging: false,
+                useCORS: true
+            }).then(canvas => {
+                // 创建虚拟链接并触发下载
+                const link = document.createElement('a');
+                link.download = '长颈鹿测量记录表.png';
+                link.href = canvas.toDataURL('image/png', 1.0);
+                link.click();
+                
+                // 恢复按钮状态
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            }).catch(err => {
+                alert('图片生成失败，请重试！');
+                btn.innerHTML = originalText;
+                btn.style.opacity = '1';
+                btn.style.pointerEvents = 'auto';
+            });
         }
     </script>
 </body>
